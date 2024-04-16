@@ -83,6 +83,33 @@ class GameGrid:
       # the cell is occupied by a tile if it is not None
       return self.tile_matrix[row][col] is not None
 
+      #check if the row full
+   def full_row_check(self, row):
+      for col in range(self.grid_width):
+         if self.tile_matrix[row][col] is None:
+            return False
+      return True
+   #
+   #a
+   #add score counter here 
+   #for every tile that we remove add its point to sum
+   #   
+   def remove_row(self, row):
+      for col in range(self.grid_width):
+         self.tile_matrix[row][col] = None
+   #shift all rows down
+   def shift_row(self, row):
+      for r in range(row+1,self.grid_height):
+         for col in range(self.grid_width):
+            self.tile_matrix[r-1][col] = self.tile_matrix[r][col]
+            self.tile_matrix[r][col] = None
+   #gaher up all remove row functions
+   def full_row_remove(self):
+      for row in range(self.grid_height):
+         while self.full_row_check(row):
+            self.remove_row(row)
+            self.shift_row(row)
+
    # A method for checking whether the cell with the given row and col indexes
    # is inside the game grid or not
    def is_inside(self, row, col):
@@ -114,4 +141,5 @@ class GameGrid:
                else:
                   self.game_over = True
       # return the value of the game_over flag
+      self.full_row_remove()
       return self.game_over

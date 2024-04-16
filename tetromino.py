@@ -36,6 +36,34 @@ class Tetromino:
          occupied_cells.append((1, 1))
          occupied_cells.append((1, 2))
          occupied_cells.append((2, 2))
+      elif self.type == 'S':
+         n = 3  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino Z in its initial rotation state
+         occupied_cells.append((0, 2))  # (column_index, row_index)
+         occupied_cells.append((1, 2))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+      elif self.type == 'T':
+         n = 3  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino Z in its initial rotation state
+         occupied_cells.append((0, 1))  # (column_index, row_index)
+         occupied_cells.append((1, 1))
+         occupied_cells.append((1, 2))
+         occupied_cells.append((2, 1))
+      elif self.type == 'L':
+         n = 3  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino Z in its initial rotation state
+         occupied_cells.append((1, 0))  # (column_index, row_index)
+         occupied_cells.append((1, 1))
+         occupied_cells.append((1, 2))
+         occupied_cells.append((2, 2))
+      elif self.type == 'J':
+         n = 3  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino Z in its initial rotation state
+         occupied_cells.append((1, 0))  # (column_index, row_index)
+         occupied_cells.append((1, 1))
+         occupied_cells.append((1, 2))
+         occupied_cells.append((0, 2))
       # create a matrix of numbered tiles based on the shape of this tetromino
       self.tile_matrix = np.full((n, n), None)
       # create the four tiles (minos) of this tetromino and place these tiles
@@ -123,6 +151,31 @@ class Tetromino:
       else:  # direction == "down"
          self.bottom_left_cell.y -= 1
       return True  # a successful move in the given direction
+
+   def can_be_rotated(self, game_grid):
+      n = len(self.tile_matrix)
+      for row in range(n):
+         for col in range(n):
+            if (self.get_cell_position(row,col).x < 0 or self.get_cell_position(row,col).x > 11 or game_grid.is_occupied(self.get_cell_position(row,col).y,self.get_cell_position(row,col).x)):
+               return False
+      return True
+   
+   def rotation(self,game_grid):
+      n = len(self.tile_matrix)
+      if self.can_be_rotated(game_grid):
+         for i in range(n):
+            for j in range(i):
+                  temp = self.tile_matrix[i][j]
+                  self.tile_matrix[i][j] = self.tile_matrix[j][i]
+                  self.tile_matrix[j][i] = temp
+   
+         # Second rotation
+         # with respect to middle column
+         for i in range(n):
+            for j in range(int(n/2)):
+                  temp = self.tile_matrix[i][j]
+                  self.tile_matrix[i][j] = self.tile_matrix[i][n-j-1]
+                  self.tile_matrix[i][n-j-1] = temp
 
    # A method for checking if this tetromino can be moved in a given direction
    def can_be_moved(self, direction, game_grid):
