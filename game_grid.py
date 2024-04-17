@@ -2,7 +2,8 @@ import lib.stddraw as stddraw  # used for displaying the game grid
 from lib.color import Color  # used for coloring the game grid
 from point import Point  # used for tile positions
 import numpy as np  # fundamental Python module for scientific computing
-
+from tetromino import Tetromino # used for showing next tetromino
+import random
 # A class for modeling the game grid
 class GameGrid:
    # A constructor for creating the game grid based on the given arguments
@@ -24,6 +25,52 @@ class GameGrid:
       # thickness values used for the grid lines and the grid boundaries
       self.line_thickness = 0.002
       self.box_thickness = 10 * self.line_thickness
+      self.score = 0 # new variable for scoreboard
+      self.next_tetromino = self.create_tetromino()
+
+   def create_tetromino(self):
+      # create a random tetromino
+      types = ['I', 'O', 'Z', 'S', 'T', 'J', 'L']
+      type = random.choice(types)
+      return Tetromino(type)
+   # set the next tetromino to current tetromino
+   def update_tetromino(self):
+      self.current_tetromino = self.next_tetromino
+      self.next_tetromino = self.create_tetromino()
+      return self.current_tetromino
+
+   def draw_next_tetromino(self):
+      base_x = self.grid_width + 0.7
+      base_y = self.grid_height - 20
+      grid_size = 4
+      tile_size = 1.5
+
+      # calcute size of tetromino
+      tetromino_width = len(self.next_tetromino.tile_matrix[0])
+      tetromino_height = len(self.next_tetromino.tile_matrix)
+
+      # draw tetromino
+      for row in range(tetromino_height):
+         for col in range(tetromino_width):
+            if self.next_tetromino.tile_matrix[row][col] is not None:
+               draw_x = base_x + (col + (grid_size - tetromino_width) / 2) * tile_size + tile_size / 2
+               draw_y = base_y + (grid_size - 1 - row - (grid_size - tetromino_height) / 2) * tile_size + tile_size / 2
+
+               # fill the background of every cell
+               stddraw.setPenColor(self.next_tetromino.tile_matrix[row][col].background_color)
+               stddraw.filledSquare(draw_x, draw_y, tile_size / 2)
+
+               # show number of the tile
+               stddraw.setPenColor(Color(240, 240, 240))
+               stddraw.text(draw_x, draw_y, str(self.next_tetromino.tile_matrix[row][col].number))
+
+               # draw frame for each tile
+               stddraw.setPenColor(Color(0, 0, 0))  # set frame color black
+               stddraw.setPenRadius(0.005)  # thickness of frame
+               stddraw.rectangle(draw_x - tile_size / 2, draw_y - tile_size / 2, tile_size, tile_size)
+
+      # reset thickness
+      stddraw.setPenRadius()
 
    # A method for displaying the game grid
    def display(self):
@@ -37,6 +84,16 @@ class GameGrid:
          self.current_tetromino.draw()
       # draw a box around the game grid
       self.draw_boundaries()
+      # draw scoreboard
+      stddraw.setFontFamily("Retro")
+      stddraw.setFontSize(60)
+      stddraw.setPenColor(Color(255, 255, 255))
+      score_text_x = self.grid_width + 3.5
+      score_text_y = self.grid_height -3
+      score_value_y = self.grid_height -5
+      stddraw.text(score_text_x, score_text_y, "SCORE")
+      stddraw.text(score_text_x, score_value_y, str(self.score))
+      self.draw_next_tetromino()
       # show the resulting drawing with a pause duration = 250 ms
       stddraw.show(250)
 
@@ -96,6 +153,8 @@ class GameGrid:
    #   
    def remove_row(self, row):
       for col in range(self.grid_width):
+         if self.tile_matrix[row][col] is not None:
+            self.score += self.tile_matrix[row][col].number # compute the sum of numbers on removed tiles
          self.tile_matrix[row][col] = None
    #shift all rows down
    def shift_row(self, row):
