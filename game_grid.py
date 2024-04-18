@@ -24,7 +24,7 @@ class GameGrid:
       self.boundary_color = Color(0, 100, 200)
       # thickness values used for the grid lines and the grid boundaries
       self.line_thickness = 0.002
-      self.box_thickness = 10 * self.line_thickness
+      self.box_thickness = 5 * self.line_thickness
       self.score = 0 # new variable for scoreboard
       self.next_tetromino = self.create_tetromino()
 
