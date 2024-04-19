@@ -201,15 +201,18 @@ class GameGrid:
                   self.game_over = True
       # return the value of the game_over flag
       self.merge()
+      self.eliminate_floating_pieces()
       self.full_row_remove()
       return self.game_over
 
+   # check merging for every column
    def merge(self):
       for col in range(self.grid_width):
          control = True
          while control:
             control = self.merge_control(col)
 
+   # check and merge tiles on the same column from bottom to top
    def merge_control(self, col):
       for row in range(self.grid_height - 1):
          if self.tile_matrix[row][col] is not None and self.tile_matrix[row + 1][col] is not None:
@@ -227,3 +230,54 @@ class GameGrid:
          for row in range(self.grid_height):
             if not self.free_piece_control(row, col):
                self.tile_matrix[row][col] = None
+
+   # delete all floating pieces
+   def eliminate_floating_pieces(self):
+      self.check_connections()
+      for row in range(self.grid_height):
+         for col in range(self.grid_width):
+            if self.tile_matrix[row][col] is not None:
+               if self.tile_matrix[row][col].is_connected == False:
+                  self.score += self.tile_matrix[row][col].number
+                  self.tile_matrix[row][col] = None
+      self.check_connections()
+
+   # check all the tiles if they are connected
+   def check_connections(self):
+      for row in range(self.grid_height):
+         for col in range(self.grid_width):
+            if self.tile_matrix[row][col] is not None:
+               self.tile_matrix[row][col].is_connected = False
+      # tiles at the ground are connected
+      for col in range(self.grid_width):
+         if self.tile_matrix[0][col] is not None:
+            self.tile_matrix[0][col].is_connected = True
+      for x in range(10):
+         # check all the tiles above the ground to see if they're connected
+         self.sweep()
+
+   def sweep(self):
+      # check all the tiles starting from bottom to top
+      for row in range(1, self.grid_height):
+         for col in range(self.grid_width):
+            if self.tile_matrix[row][col] is not None:
+               # check the below neighbor
+               if self.tile_matrix[row - 1][col] is not None:
+                  if self.tile_matrix[row - 1][col].is_connected == True:
+                     self.tile_matrix[row][col].is_connected = True
+      # check all the tiles form left to right
+      for row in range(1, self.grid_height):
+         for col in range(1, self.grid_width):
+            if self.tile_matrix[row][col] is None:
+               continue
+            if self.tile_matrix[row][col - 1] is not None:
+               if self.tile_matrix[row][col - 1].is_connected == True:
+                  self.tile_matrix[row][col].is_connected = True
+      # check all the tiles form right to left
+      for row in range(1, self.grid_height):
+         for col in range(self.grid_width - 2, -1, -1):
+            if self.tile_matrix[row][col] is None:
+               continue
+            if self.tile_matrix[row][col + 1] is not None:
+               if self.tile_matrix[row][col + 1].is_connected == True:
+                  self.tile_matrix[row][col].is_connected = True

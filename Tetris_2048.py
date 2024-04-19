@@ -14,9 +14,11 @@ import random  # used for creating tetrominoes with random types (shapes)
 import time # used for creating diffuculty settings
 
 fall_delay = 0.5 # A global variable for fall delay, it is default by 0.5
+is_paused = False
 # The main function where this program starts execution
 def start():
    global fall_delay # declares global variable fall_delay in this function
+   global is_paused
    # set the dimensions of the game grid
    grid_h, grid_w = 20, 12
    # set the size of the drawing canvas (the displayed window)
@@ -71,30 +73,42 @@ def start():
             while current_tetromino.move("down", grid):
             # performs hard drop action to tetromino
              pass
+         elif key_typed == "p":
+            is_paused = not is_paused
+
          # clear the queue of the pressed keys for a smoother interaction
          stddraw.clearKeysTyped()
-      # capture the current time to check against the last fall time for auto-falling tetrominos
-      current_time = time.time()
-      # check if the auto fall interval has elapsed
-      if current_time - last_fall_time > fall_delay:
-         #attempt to move the current tetromino down
-         success = current_tetromino.move("down", grid)
-         #update the time of the last succesful fall
-         last_fall_time = current_time
-         # check if the tetromino could not move down
-         if not success:
-            # lock the current tetromino, indicating it cannot move anymore
-            current_tetromino.is_locked = True
-            # retrieve the minimal bounding matrix of the tetromino and its grid position
-            tiles, pos = current_tetromino.get_min_bounded_tile_matrix(True)
-            # Lock the tetrominos tiles onto the game grid
-            game_over = grid.update_grid(tiles, pos)
-            #  check if the last tetromino landed over the border
-            if game_over:
-               print("Game Over")
-               break
-            # create a new tetromino
-            current_tetromino = grid.update_tetromino()
+
+      #check if the game is paused
+      if is_paused:
+         stddraw.setPenColor(stddraw.BLACK)
+
+         stddraw.show(100)
+         continue
+
+      if not is_paused:
+         # capture the current time to check against the last fall time for auto-falling tetrominos
+         current_time = time.time()
+         # check if the auto fall interval has elapsed
+         if current_time - last_fall_time > fall_delay:
+            #attempt to move the current tetromino down
+            success = current_tetromino.move("down", grid)
+            #update the time of the last succesful fall
+            last_fall_time = current_time
+            # check if the tetromino could not move down
+            if not success:
+               # lock the current tetromino, indicating it cannot move anymore
+               current_tetromino.is_locked = True
+               # retrieve the minimal bounding matrix of the tetromino and its grid position
+               tiles, pos = current_tetromino.get_min_bounded_tile_matrix(True)
+               # Lock the tetrominos tiles onto the game grid
+               game_over = grid.update_grid(tiles, pos)
+               #  check if the last tetromino landed over the border
+               if game_over:
+                  print("Game Over")
+                  break
+               # create a new tetromino
+               current_tetromino = grid.update_tetromino()
 
       # display the game grid with the current tetromino
       grid.display()

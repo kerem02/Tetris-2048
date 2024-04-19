@@ -152,6 +152,7 @@ class Tetromino:
          self.bottom_left_cell.y -= 1
       return True  # a successful move in the given direction
 
+   # check all the tiles including empty ones if they are in game grid and not occupied
    def can_be_rotated(self, game_grid):
       n = len(self.tile_matrix)
       for row in range(n):
@@ -159,7 +160,8 @@ class Tetromino:
             if (self.get_cell_position(row,col).x < 0 or self.get_cell_position(row,col).x > 11 or game_grid.is_occupied(self.get_cell_position(row,col).y,self.get_cell_position(row,col).x)):
                return False
       return True
-   
+
+   # do the rotation with square matrix rotation
    def rotation(self,game_grid):
       n = len(self.tile_matrix)
       if self.can_be_rotated(game_grid):
@@ -168,7 +170,7 @@ class Tetromino:
                   temp = self.tile_matrix[i][j]
                   self.tile_matrix[i][j] = self.tile_matrix[j][i]
                   self.tile_matrix[j][i] = temp
-   
+
          # Second rotation
          # with respect to middle column
          for i in range(n):
