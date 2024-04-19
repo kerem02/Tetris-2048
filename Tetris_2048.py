@@ -135,9 +135,9 @@ def create_tetromino():
 def display_game_menu(grid_height, grid_width):
    global fall_delay # declares global variable fall_delay in this function
    # the colors used for the menu
-   background_color = Color(42, 69, 99)
+   background_color = Color(50, 50, 50)
    button_color = Color(25, 255, 228)
-   text_color = Color(31, 160, 239)
+   text_color = Color(0, 0, 0)
    # clear the background drawing canvas to background_color
    stddraw.clear(background_color)
    # get the directory in which this python code file is placed
