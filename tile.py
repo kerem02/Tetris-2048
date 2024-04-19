@@ -1,5 +1,6 @@
 import lib.stddraw as stddraw  # used for drawing the tiles to display them
 from lib.color import Color  # used for coloring the tiles
+import random
 
 # A class for modeling numbered tiles as in 2048
 class Tile:
@@ -13,7 +14,11 @@ class Tile:
    # A constructor that creates a tile with 2 as the number on it
    def __init__(self):
       # set the number on this tile
-      self.number = 2
+
+      if random.randint(0, 9) > 5:
+         self.number = 4
+      else:
+         self.number = 2
       # set the colors of this tile
       self.background_color = Color(151, 178, 199)  # background (tile) color
       self.foreground_color = Color(0, 100, 200)  # foreground (number) color

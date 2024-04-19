@@ -200,5 +200,30 @@ class GameGrid:
                else:
                   self.game_over = True
       # return the value of the game_over flag
+      self.merge()
       self.full_row_remove()
       return self.game_over
+
+   def merge(self):
+      for col in range(self.grid_width):
+         control = True
+         while control:
+            control = self.merge_control(col)
+
+   def merge_control(self, col):
+      for row in range(self.grid_height - 1):
+         if self.tile_matrix[row][col] is not None and self.tile_matrix[row + 1][col] is not None:
+            if self.tile_matrix[row][col].number == self.tile_matrix[row + 1][col].number:
+               self.tile_matrix[row][col].number += self.tile_matrix[row][col].number
+               self.score += self.tile_matrix[row][col].number
+               self.tile_matrix[row + 1][col] = None
+               for r in range(row + 1, self.grid_height - 1):
+                  self.tile_matrix[r][col] = self.tile_matrix[r + 1][col]
+               return True
+      return False
+
+   def free_piece_remove(self):
+      for col in range(self.grid_width):
+         for row in range(self.grid_height):
+            if not self.free_piece_control(row, col):
+               self.tile_matrix[row][col] = None
