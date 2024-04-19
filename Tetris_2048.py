@@ -14,11 +14,12 @@ import random  # used for creating tetrominoes with random types (shapes)
 import time # used for creating diffuculty settings
 
 fall_delay = 0.5 # A global variable for fall delay, it is default by 0.5
-is_paused = False
+is_paused = False # A global variable for pause game
+
 # The main function where this program starts execution
 def start():
    global fall_delay # declares global variable fall_delay in this function
-   global is_paused
+   global is_paused # # declares global variable is_paused in this function
    # set the dimensions of the game grid
    grid_h, grid_w = 20, 12
    # set the size of the drawing canvas (the displayed window)
@@ -75,15 +76,12 @@ def start():
              pass
          elif key_typed == "p":
             is_paused = not is_paused
-
          # clear the queue of the pressed keys for a smoother interaction
          stddraw.clearKeysTyped()
 
       #check if the game is paused
       if is_paused:
-         stddraw.setPenColor(stddraw.BLACK)
-
-         stddraw.show(100)
+         display_pause_message(grid_h, grid_w) # displays the pause text on screen
          continue
 
       if not is_paused:
@@ -115,6 +113,13 @@ def start():
 
    # print a message on the console when the game is over
    print("Game over")
+# a function for "Paused" message
+def display_pause_message(grid_h, grid_w):
+   stddraw.setFontSize(45)
+   stddraw.setFontFamily("Retro")
+   stddraw.setPenColor(stddraw.WHITE)
+   stddraw.text(grid_w / 2 - 0.6, grid_h / 2, "Paused")
+   stddraw.show(100)
 
 # A function for creating random shaped tetrominoes to enter the game grid
 def create_tetromino():

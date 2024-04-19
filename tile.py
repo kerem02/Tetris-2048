@@ -56,7 +56,7 @@ class Tile:
       stddraw.setPenColor(self.background_color)
       stddraw.filledSquare(position.x, position.y, length / 2)
       # draw the bounding box around the tile as a square
-      stddraw.setPenColor(self.box_color)
+      stddraw.setPenColor(stddraw.BLACK)
       stddraw.setPenRadius(Tile.boundary_thickness)
       stddraw.square(position.x, position.y, length / 2)
       stddraw.setPenRadius()  # reset the pen radius to its default value

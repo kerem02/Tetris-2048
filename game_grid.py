@@ -18,10 +18,10 @@ class GameGrid:
       # the game_over flag shows whether the game is over or not
       self.game_over = False
       # set the color used for the empty grid cells
-      self.empty_cell_color = Color(42, 69, 99)
+      self.empty_cell_color = Color(45, 45, 45)
       # set the colors used for the grid lines and the grid boundaries
-      self.line_color = Color(0, 100, 200)
-      self.boundary_color = Color(0, 100, 200)
+      self.line_color = Color(80, 80, 80)
+      self.boundary_color = Color(200, 200, 200)
       # thickness values used for the grid lines and the grid boundaries
       self.line_thickness = 0.002
       self.box_thickness = 5 * self.line_thickness
@@ -56,12 +56,16 @@ class GameGrid:
                draw_x = base_x + (col + (grid_size - tetromino_width) / 2) * tile_size + tile_size / 2
                draw_y = base_y + (grid_size - 1 - row - (grid_size - tetromino_height) / 2) * tile_size + tile_size / 2
 
-               # fill the background of every cell
-               stddraw.setPenColor(self.next_tetromino.tile_matrix[row][col].background_color)
+               # fill the background of every cell with appropaite color
+               if self.next_tetromino.tile_matrix[row][col].number == 2:
+                  stddraw.setPenColor(Color(239, 230, 221))
+               elif self.next_tetromino.tile_matrix[row][col].number == 4:
+                  stddraw.setPenColor(Color(239, 227, 205))
+
                stddraw.filledSquare(draw_x, draw_y, tile_size / 2)
 
                # show number of the tile
-               stddraw.setPenColor(Color(240, 240, 240))
+               stddraw.setPenColor(Color(30, 30, 30))
                stddraw.text(draw_x, draw_y, str(self.next_tetromino.tile_matrix[row][col].number))
 
                # draw frame for each tile
@@ -91,8 +95,11 @@ class GameGrid:
       score_text_x = self.grid_width + 3.5
       score_text_y = self.grid_height -3
       score_value_y = self.grid_height -5
+      info_pause = self.grid_height -8
       stddraw.text(score_text_x, score_text_y, "SCORE")
       stddraw.text(score_text_x, score_value_y, str(self.score))
+      stddraw.setFontSize(30)
+      stddraw.text(score_text_x, info_pause, "P to pause")
       self.draw_next_tetromino()
       # show the resulting drawing with a pause duration = 250 ms
       stddraw.show(250)
